@@ -788,7 +788,9 @@ body.in-game .hero-overlay {
     }
 
     #gameVersion {
-        font-size: 7.5px;
+        font-size: 6px;
+        bottom: 20px;
+        left: 6px;
     }
 
     .avatar-block {
