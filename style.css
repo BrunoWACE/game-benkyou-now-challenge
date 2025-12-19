@@ -764,6 +764,11 @@ body.in-game .hero-overlay {
 
 @media (max-width: 768px) {
 
+    #hajimeText {
+        font-size: 80px;
+        font-family: 'GOOD BRUSH', sans-serif;
+    }
+
     .music-btn {
         top: 35px;
     }
