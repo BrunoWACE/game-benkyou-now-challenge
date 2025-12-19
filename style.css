@@ -10,8 +10,6 @@
 }
 
 
-
-
 /* =========================
    GLOBAL
 ========================= */
@@ -36,7 +34,9 @@ body.loading #copyright {
 html,
 body {
     height: 100%;
+    overflow: hidden;
 }
+
 
 body {
     margin: 0;
@@ -240,6 +240,7 @@ h3 {
     max-width: 420px;
     margin-left: auto;
     margin-right: auto;
+    padding: 15px;
 }
 
 /* garante que os botões ocupem bem a célula */
@@ -750,6 +751,10 @@ body.in-game .hero-overlay {
 
 @media (max-width: 768px) {
 
+    .music-btn {
+        top: 55px;
+    }
+
     h1 {
         font-size: 38px;
         width: 370px;
@@ -923,4 +928,6 @@ body.in-game .hero-overlay {
     #owari {
         font-size: 110px;
     }
+
+
 }
