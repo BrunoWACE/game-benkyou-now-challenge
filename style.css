@@ -765,7 +765,7 @@ body.in-game .hero-overlay {
 @media (max-width: 768px) {
 
     #hajimeText {
-        font-size: 80px;
+        font-size: 66px;
         font-family: 'GOOD BRUSH', sans-serif;
     }
 
