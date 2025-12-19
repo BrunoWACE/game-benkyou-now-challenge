@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BENKYOU NOW CHALLENGE</title>
+    <link rel="icon" href="./assets/LogoIcone.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body class="loading">
+    <div id="romajiButtons"></div>
+    <div class="hero-background">
+        <div class="hero-overlay"></div>
+
+        <!-- TELA INICIAL -->
+        <div id="titleScreen" class="centered">
+            <h1 style="margin: 0;">BENKYOU NOW</h1>
+            <h2 style="margin-top: 5px;">Challenge</h2>
+            <p id="pressStart">PRESS START</p>
+        </div>
+
+        <div id="gameVersion">v1.0.0</div>
+        <div id="copyright">© 2025 BENKYOU NOW ONLINE | 勉強ナウ・オンライン. Todos os direitos reservados.</div>
+
+        <br>
+        <!-- NOVA TELA: ESCOLHER ALFABETO -->
+
+        <div id="alphabetScreen" class="centered" style="display: none;">
+            <h2 class="titleRed">Selecione Alfabeto</h2>
+            <br>
+            <br>
+            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; margin-top: 20px;">
+                <button class="btn" onclick="selectAlphabet('hiragana')">Hiragana</button>
+
+                <!-- Katakana (reservado para o futuro, invisível) -->
+                <button class="btn katakana-hidden" onclick="selectAlphabet('katakana')">Katakana</button>
+            </div>
+            <button id="howToPlayBtn" class="btn-howto" style="margin-top: 20px; width: 125px;">
+                Tutorial
+            </button>
+
+            <button class="btn-back" onclick="goToTitle()" style="margin-top: 20px; width: 125px;">Voltar</button>
+        </div>
+
+
+        <!-- NOVA TELA: ESCOLHER GYO -->
+        <div id="gyoScreen" class="centered">
+            <h2 class="titleRed">Teste seus conhecimentos em Hiragana nos respectivos gyōs</h2>
+            <br>
+            <div class="gyo-grid">
+                <button class="btn" onclick="selectGyo('vogais')">Vogais</button>
+                <button class="btn" onclick="selectGyo('ka')">Ka gyō</button>
+                <button class="btn" onclick="selectGyo('sa')">Sa gyō</button>
+                <button class="btn" onclick="selectGyo('ta')">Ta gyō</button>
+                <button class="btn" onclick="selectGyo('na')">Na gyō</button>
+                <button class="btn" onclick="selectGyo('ha')">Ha gyō</button>
+                <button class="btn" onclick="selectGyo('ma')">Ma gyō</button>
+                <button class="btn" onclick="selectGyo('ya_wa')">Ya + Wa gyō</button>
+                <button class="btn" onclick="selectGyo('ra')">Ra gyō</button>
+            </div>
+            <br>
+            <br>
+
+            <button class="btn-back" onclick="goToTitle()" style="width: 125px;">Voltar</button>
+        </div>
+
+
+        <!-- HUD -->
+        <div id="hud">
+
+            <div style="text-align: left;">
+                <div id="playerName"></div>
+
+                <div id="lifeContainer">
+                    <span id="lifeText" style="font-weight: 600;">100/100</span>
+                    <div id="lifeBarBackground">
+                        <div id="lifeBarFill"></div>
+                    </div>
+                </div>
+
+                <div id="specialBarContainer">
+                    <span id="specialLabel" style="font-weight: 600;">Especial</span>
+                    <div id="specialBarBackground">
+                        <div id="specialBarFill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="hub-ativo" style="text-align: center; display:flex; align-items:center; gap:12px;">
+                <button id="specialBtn" class="special-btn" disabled title="Encha a barra para ativar">
+                    ESPECIAL
+                </button>
+
+                <!-- NOVO BOTÃO PAUSE/PLAY -->
+                <button id="pauseBtn" class="pause-btn" title="Pausar" aria-label="Pause/Play"></button>
+
+                <div id="score" style="font-weight: 600;">Score: 0000000000</div>
+            </div>
+
+        </div>
+
+        <!-- INPUT -->
+        <div id="inputArea">
+            <p style="color: #ffffff; font-size: 13px;">Digite o Kana no campo abaixo:</p>
+            <input type="text" id="kanaInput" placeholder="Digite o romaji..." autofocus />
+        </div>
+
+        <!-- GAME -->
+        <canvas id="gameCanvas" width="600" height="620"></canvas>
+        <div id="hajimeText">HAJIME!</div>
+
+        <!-- GAME OVER -->
+        <div id="gameOverScreen" class="centered">
+            <h1 id="owari" style="font-family: 'KouzanBrushFontGyousyo','Yu Gothic';">終わり</h1>
+            <h3 style="color: #222222;">OWARI!</h3>
+
+            <div id="gameSummary" class="game-summary">
+                <p class="summary-line"><strong id="summaryNickname"
+                        style="color: #a30003 ; font-weight:900;">Player</strong></p>
+                <p class="summary-line" style="color: #a30003; font-weight: 700;">Alfabeto: <span id="summaryAlphabet"
+                        style="color: #222222;">Hiragana</span>
+                </p>
+                <p class="summary-line" style="color: #a30003; font-weight: 700">Vogal/Gyō: <span id="summaryGyo"
+                        style="color:#222222;">-</span></p>
+                <p class="summary-line" style="color: #a30003; font-weight: 700">Total pontos: <span id="summaryScore"
+                        style="color: #222222;">0</span></p>
+
+                <p class="summary-cta" style="color: #222222;">Quer aprender os kanas e melhorar seus pontos?</p>
+                <p class="summary-cta strong" style="color: #222222;">Seja aluno da <strong
+                        style="color: #a30003;">BENKYOU NOW <span style="color: #222222;">ONLINE</span></strong></p>
+
+                <a class="link-btn" href="https://benkyounowonline.com.br/" target="_blank" rel="noopener">
+                    Acesse o site oficial
+                </a>
+
+                <button class="btn-back" onclick="goToTitle()" style="width: 150px;">Voltar ao Início</button>
+            </div>
+        </div>
+
+        <!-- AVATAR -->
+        <div id="avatarSelectionScreen" class="centered" style="display: none;">
+            <h2 class="titleRed">Escolha seu Avatar</h2>
+            <br>
+            <br>
+            <div class="avatar-block" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <img src="assets/avatar_fogo.png" class="avatar-option fogo" onclick="selectAvatar(this, 'Fogo')"
+                    title="Elemento Fogo" />
+                <img src="assets/avatar_agua.png" class="avatar-option agua" onclick="selectAvatar(this, 'Agua')"
+                    title="Elemento Água" />
+                <img src="assets/avatar_terra.png" class="avatar-option terra" onclick="selectAvatar(this, 'Terra')"
+                    title="Elemento Terra" />
+                <img src="assets/avatar_ar.png" class="avatar-option ar" onclick="selectAvatar(this, 'Ar')"
+                    title="Elemento Ar" />
+                <img src="assets/avatar_flora.png" class="avatar-option flora" onclick="selectAvatar(this, 'Flora')"
+                    title="Elemento Flora" />
+            </div>
+
+            <!-- Sempre visível (modelo da 2ª imagem) -->
+            <p id="avatarInfo" style="margin-top: 18px; color: #222222">Avatar selecionado: -</p>
+            <p id="avatarPhrase" style="margin-top: 6px; color:#222222; font-style: italic; min-height: 22px;"></p>
+            <br>
+            <div style="margin-top: 12px;">
+                <input type="text" id="nicknameInput" placeholder="Digite seu nickname" maxlength="12"
+                    autocomplete="off" />
+            </div>
+            <br>
+            <div style="display: flex; justify-content: center; gap: 20px; margin-top: 16px;">
+                <button class="btn" id="startGameBtn" onclick="startGame()" disabled>Iniciar Jogo</button>
+                <button class="btn-back" onclick="backToGyo()">Voltar</button>
+            </div>
+        </div>
+
+
+        <div id="howToModal" class="howto-modal">
+            <div class="howto-content">
+                <button id="closeHowTo" class="howto-close">✕</button>
+
+                <img src="./assets/tutorial.png" alt="Como Jogar - Benkyou Now Challenge" class="howto-image" />
+            </div>
+        </div>
+
+        <button id="musicBtn" class="music-btn" title="Música ligada"></button>
+
+
+
+
+        <script src="./script.js"></script>
+</body>
+
+</html>

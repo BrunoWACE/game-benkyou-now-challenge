@@ -1,0 +1,926 @@
+@font-face {
+    font-family: 'GoodBrush';
+    src: url('./fonts/GoodBrush.ttf') format('truetype');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+
+/* =========================
+   GLOBAL
+========================= */
+
+/* Anti-flicker: esconde tudo enquanto o JS não liberou */
+body.loading #titleScreen,
+body.loading #alphabetScreen,
+body.loading #gyoScreen,
+body.loading #avatarSelectionScreen,
+body.loading #gameOverScreen,
+body.loading #demoEndScreen,
+body.loading #cpfPrompt,
+body.loading #modeScreen,
+body.loading #hud,
+body.loading #inputArea,
+body.loading #romajiButtons,
+body.loading #gameCanvas,
+body.loading #copyright {
+    display: none !important;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+    /* opcional: evita scroll por causa do canvas/elementos */
+}
+
+#owari {
+    font-size: 170px;
+}
+
+.btn-howto {
+    padding: 10px 20px;
+    font-size: 16px;
+    width: 200px;
+    cursor: pointer;
+    background: #a30003;
+    color: #FFFFFF;
+    border: 2px solid;
+    border-radius: 10px;
+}
+
+.btn-howto:hover {
+    background: #c40005;
+    /* vermelho mais vivo */
+    transform: translateY(-2px);
+    /* sobe levemente */
+    box-shadow: 0 6px 14px rgba(163, 0, 3, 0.4);
+}
+
+.howto-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.howto-content {
+    position: relative;
+    max-width: 95%;
+    max-height: 95%;
+}
+
+.howto-image {
+    width: 90%;
+    height: auto;
+    border-radius: 15px;
+}
+
+.howto-close {
+    position: absolute;
+    top: -12px;
+    right: 28px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #ececec;
+    color: #a30003;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.hero-background {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("./assets/Fundo01.png");
+    background-size: cover;
+    /* preenche tudo */
+    background-position: center;
+    /* centraliza */
+    background-repeat: no-repeat;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #ffffffef, #ede2c8ef);
+}
+
+#titleScreen h1 {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+#titleScreen h2 {
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+
+
+h1 {
+    font-size: 50px;
+    font-weight: 800;
+    color: #a30003;
+}
+
+h2 {
+    font-size: 45px;
+    color: #333333;
+    font-family: 'GoodBrush', sans-serif;
+}
+
+h3 {
+    font-size: 30PX;
+    margin: 15px 0 80px 0;
+}
+
+
+
+.titleRed {
+    color: #a30003;
+    font-size: 35px;
+    font-family: sans-serif;
+}
+
+
+#titleScreen,
+#modeScreen,
+#cpfPrompt,
+#gameCanvas,
+#gameOverScreen,
+#demoEndScreen {
+    display: none;
+}
+
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    width: 200px;
+    cursor: pointer;
+    background: #a30003;
+    color: #FFFFFF;
+    border: 2px solid;
+    border-radius: 10px;
+}
+
+.btn-back {
+    padding: 10px 20px;
+    font-size: 16px;
+    width: 200px;
+    cursor: pointer;
+    background: #f1f1f1;
+    color: #a30003;
+    border: 2px solid;
+    border-radius: 10px;
+}
+
+.btn,
+.btn-back {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+/* HOVER BOTÃO PRINCIPAL */
+.btn:hover {
+    background: #c40005;
+    /* vermelho mais vivo */
+    transform: translateY(-2px);
+    /* sobe levemente */
+    box-shadow: 0 6px 14px rgba(163, 0, 3, 0.4);
+}
+
+/* HOVER BOTÃO VOLTAR */
+.btn-back:hover {
+    background: #ffffff;
+    color: #7a0002;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* EFEITO CLICK (pressionado) */
+.btn:active,
+.btn-back:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.gyo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* garante que os botões ocupem bem a célula */
+.gyo-grid .btn {
+    width: 100%;
+}
+
+/* botão voltar separado e centralizado */
+.voltar-btn {
+    margin-top: 20px;
+    width: 200px;
+}
+
+
+/* Nick input (fica igual ao estilo do game) */
+#nicknameInput {
+    padding: 10px;
+    font-size: 14px;
+    width: 260px;
+    text-align: center;
+    border: 1px solid #aaaaaa;
+    border-radius: 6px;
+    outline: none;
+}
+
+#nicknameInput:focus {
+    border-color: #fff;
+}
+
+/* Botão desabilitado */
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Avatar selecionado: glow/blur iluminado por cor */
+.avatar-option {
+    width: 80px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.avatar-option.selected-avatar {
+    transform: scale(1.15);
+}
+
+/* FOGO */
+.avatar-option.selected-avatar.fogo {
+    filter: drop-shadow(0 0 12px rgba(243, 104, 23, 0.95)) blur(0.2px);
+}
+
+/* ÁGUA */
+.avatar-option.selected-avatar.agua {
+    filter: drop-shadow(0 0 12px rgba(64, 151, 201, 0.979)) blur(0.2px);
+}
+
+/* TERRA */
+.avatar-option.selected-avatar.terra {
+    filter: drop-shadow(0 0 12px rgba(124, 112, 88, 0.95)) blur(0.2px);
+}
+
+/* AR */
+.avatar-option.selected-avatar.ar {
+    filter: drop-shadow(0 0 12px rgba(107, 207, 207, 0.95)) blur(0.2px);
+}
+
+/* FLORA */
+.avatar-option.selected-avatar.flora {
+    filter: drop-shadow(0 0 12px rgb(113, 184, 72)) blur(0.2px);
+}
+
+
+/* =========================
+   PRESS START
+========================= */
+
+#pressStart {
+    margin-top: 40px;
+    font-size: 25px;
+    color: #5a5a5a;
+    animation: blink 2s infinite;
+    cursor: pointer;
+}
+
+#pressStart.stop-blink {
+    animation: none !important;
+    opacity: 1 !important;
+}
+
+.music-btn {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.459);
+    background: rgba(0, 0, 0, 0.39);
+    color: #fff;
+    cursor: pointer;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.music-btn:hover {
+    background: rgba(0, 0, 0, 0.651);
+}
+
+.music-btn:active {
+    transform: scale(0.95);
+}
+
+.music-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+body.in-game .music-btn {
+    display: none;
+}
+
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* =========================
+   CANVAS & HUD
+========================= */
+
+
+#gameCanvas {
+    background:
+        radial-gradient(750px 600px at 10% -10%, rgba(50, 85, 151, 0.25), transparent 60%),
+        radial-gradient(900px 500px at 90% 40%, rgba(73, 35, 109, 0.25), transparent 55%),
+        linear-gradient(150deg, #1e1e1f 60%);
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 100vh;
+    z-index: 1;
+}
+
+
+
+
+#hud {
+    display: none;
+    justify-content: space-between;
+    padding: 25px;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    background-color: #333333;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+#inputArea {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    display: none;
+}
+
+#kanaInput {
+    font-size: 14px;
+    padding: 10px;
+    width: 210px;
+}
+
+#kanaInput::placeholder {
+    color: #ccc;
+    opacity: 0.8;
+}
+
+/* =========================
+   HAJIME
+========================= */
+
+#hajimeText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 100px;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    z-index: 100;
+    pointer-events: none;
+    font-family: 'GOOD BRUSH', sans-serif;
+}
+
+/* =========================
+   COPYRIGHT
+========================= */
+
+#copyright {
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    font-size: 12px;
+    color: #686868;
+    display: none;
+}
+
+/* =========================
+   LIFE BAR
+========================= */
+
+#lifeContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+#lifeText {
+    font-size: 14px;
+}
+
+#lifeBarBackground {
+    width: 160px;
+    height: 16px;
+    background-color: #444;
+    border: 1px solid #888;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#lifeBarFill {
+    height: 100%;
+    width: 100%;
+    background-color: #0f0;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* =========================
+   SPECIAL BAR
+========================= */
+
+#specialBarContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+#specialLabel {
+    font-size: 14px;
+}
+
+#specialBarBackground {
+    width: 160px;
+    height: 14px;
+    background-color: #222;
+    border: 1px solid #00aaff;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+#specialBarFill {
+    height: 100%;
+    width: 0%;
+    background-color: #00aaff;
+    transition: width 0.3s ease;
+}
+
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 6px 2px #00aaff;
+    }
+
+    50% {
+        box-shadow: 0 0 12px 4px #00aaff;
+    }
+
+    100% {
+        box-shadow: 0 0 6px 2px #00aaff;
+    }
+}
+
+.special-ready {
+    animation: pulseGlow 1.5s infinite;
+}
+
+#gameCanvas.special-active {
+    box-shadow: 0 0 30px 10px rgba(255, 69, 0, 0.6);
+    /* Cor padrão, será alterada pelo JS */
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+
+/* =========================
+   ROMAJI BUTTONS
+========================= */
+
+#romajiButtons {
+    position: fixed;
+    left: 89%;
+    top: 50px;
+    transform: translateX(-50%);
+    width: min(100vw, 320px);
+    padding: 15px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    /* 5 colunas (A I U E O) */
+    gap: 8px;
+
+    z-index: 9999;
+}
+
+.romaji-btn {
+    width: 100%;
+    height: 40px;
+    /* AQUI você aumenta o botão */
+    font-size: 20px;
+    font-weight: 700;
+    border-radius: 10px;
+    background: #ffffffc2;
+}
+
+.romaji-btn:hover {
+    background-color: #ffffff;
+}
+
+/* =========================
+   AVATAR
+========================= */
+
+.avatar-block {
+    padding: 25px 50px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 55px;
+}
+
+
+
+.avatar-option {
+    width: 80px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.avatar-option:hover {
+    transform: scale(1.2);
+}
+
+.katakana-hidden {
+    display: none;
+}
+
+.game-summary {
+    background-color: #ffffff85;
+    padding: 40px 20px;
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.summary-line {
+    margin: 0;
+    font-size: 18px;
+}
+
+.summary-cta {
+    margin: 8px 0 0;
+    font-size: 18px;
+    opacity: 0.95;
+    text-align: center;
+}
+
+.summary-cta.strong {
+    margin-top: 2px;
+}
+
+.link-btn {
+    margin-top: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.special-btn {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid #00aaff;
+    background: #222;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+
+.special-btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.special-btn:not(:disabled):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 12px 2px rgba(0, 170, 255, .55);
+}
+
+.pause-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.20);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.12s ease, background 0.12s ease, border 0.12s ease;
+}
+
+.pause-btn:hover {
+    background: rgba(0, 0, 0, 0.30);
+    border-color: rgba(255, 255, 255, 0.589);
+}
+
+.pause-btn:active {
+    transform: scale(0.98);
+}
+
+.pause-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+/* Ativa o fundo só durante o jogo */
+body.in-game .hero-background {
+    background-image: url("./assets/SAORI.png");
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: 45%;
+    /* mantém proporção */
+    background-color: #f5efdf;
+    /* fallback bonito */
+}
+
+body.in-game .hero-overlay {
+    opacity: 0.15;
+    /* diminui a camada escura durante o game */
+}
+
+#gameVersion {
+    position: fixed;
+    bottom: 12px;
+    left: 16px;
+
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: rgba(90, 90, 90, 0.9);
+
+    z-index: 9999;
+    pointer-events: none;
+
+    display: none;
+    /* 🔴 escondido */
+}
+
+#titleScreen[style*="display: block"]~#gameVersion {
+    display: block;
+}
+
+#hub-ativo {
+    margin-top: -50px;
+}
+
+
+@media (max-width: 768px) {
+
+    h1 {
+        font-size: 38px;
+        width: 370px;
+    }
+
+    h2 {
+        font-size: 38px;
+        width: 350px;
+    }
+
+    .gyo-grid {
+        gap: 10px;
+    }
+
+    #copyright {
+        font-size: 7.5px;
+        padding: auto;
+    }
+
+    #gameVersion {
+        font-size: 7.5px;
+    }
+
+    .avatar-block {
+        width: 350px;
+        gap: 10px;
+        padding: 18px;
+        border-radius: 20px;
+    }
+
+    .btn {
+        width: 150px;
+    }
+
+    .btn-back {
+        width: 150px;
+    }
+
+    /* =========================================
+   GAME "CORRIDOR" (mesma largura do canvas)
+========================================= */
+    :root {
+        --gameW: min(92vw, 600px);
+        /* largura real do jogo */
+        --hudPad: 14px;
+    }
+
+    /* =========================================
+   CANVAS
+========================================= */
+    #gameCanvas {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        top: 0;
+
+        width: var(--gameW);
+        height: 100svh;
+        /* melhor que 100vh no mobile */
+        z-index: 1;
+
+        background:
+            radial-gradient(750px 600px at 10% -10%, rgba(50, 85, 151, 0.25), transparent 60%),
+            radial-gradient(900px 500px at 90% 40%, rgba(73, 35, 109, 0.25), transparent 55%),
+            linear-gradient(150deg, #1e1e1f 60%);
+    }
+
+    /* =========================================
+   HUD (sempre dentro do corredor do jogo)
+========================================= */
+    #hud {
+        position: fixed;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+
+        width: var(--gameW);
+        padding: var(--hudPad);
+
+        display: none;
+        /* seu JS liga como flex */
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+
+        box-sizing: border-box;
+        background: #333333;
+        z-index: 10;
+        width: min(100vw, 600px);
+    }
+
+    /* bloco da direita: não deixa "Score / Especial / Pause" escapar */
+    #hud>div:last-child {
+        margin-top: 0 !important;
+        /* mata esse margin-top:-60px */
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        flex-wrap: wrap;
+        /* quebra linha se precisar */
+        justify-content: flex-end;
+        text-align: right;
+        max-width: 50%;
+    }
+
+    /* bloco da esquerda também pode encolher */
+    #hud>div:first-child {
+        max-width: 50%;
+    }
+
+    /* =========================================
+   BARRAS (responsivas)
+========================================= */
+    #lifeBarBackground,
+    #specialBarBackground {
+        width: clamp(140px, 32vw, 220px);
+    }
+
+    /* =========================================
+   ROMAJI BUTTONS (sempre centralizado embaixo)
+========================================= */
+    /* ROMAJI sempre grudado embaixo e centralizado */
+    #romajiButtons {
+        position: fixed;
+        left: 50%;
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 0px);
+        top: auto !important;
+        /* <- mata QUALQUER top antigo */
+        right: auto !important;
+
+        transform: translateX(-50%);
+        width: min(100vw, 600px);
+        max-width: 600px;
+
+        padding: 12px;
+        box-sizing: border-box;
+
+        background: #333333;
+
+        display: none;
+        /* seu JS liga pra grid no game */
+        grid-template-columns: repeat(5, 1fr);
+        gap: 12px;
+
+        z-index: 9999;
+    }
+
+    /* Botões responsivos (crescem em telas maiores) */
+    .romaji-btn {
+        width: 100%;
+        height: clamp(44px, 7vh, 72px);
+        font-size: clamp(16px, 3.2vw, 26px);
+        font-weight: 700;
+        border-radius: 10px;
+        background: #ffffffc2;
+    }
+
+
+    .romaji-btn:hover {
+        background: #ffffff;
+    }
+
+
+    body.in-game .hero-background {
+        background-image: none;
+        /* mantém proporção */
+        background-color: #000000;
+        /* fallback bonito */
+    }
+
+    #owari {
+        font-size: 110px;
+    }
+}
