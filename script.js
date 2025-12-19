@@ -108,6 +108,14 @@ Object.values(sfxSpecialLoopByElement).forEach(a => {
     a.loop = true;
 });
 
+// Detecta se o dispositivo permite auto-focus (desktop)
+function shouldAutoFocus() {
+    // pointer: coarse = toque (mobile/tablet)
+    // pointer: fine   = mouse (desktop)
+    return !window.matchMedia("(pointer: coarse)").matches;
+}
+
+
 function updateMusicButton() {
     const btn = document.getElementById("musicBtn");
     if (!btn) return;
@@ -512,6 +520,7 @@ function goToTitle() {
     resetGameState();
     hideAllScreens();
 
+    document.activeElement.blur();
     document.body.classList.remove("in-game");
     document.getElementById("titleScreen").style.display = "block";
     document.getElementById("copyright").style.display = "block";
@@ -592,6 +601,11 @@ function showAvatarSelection() {
     const phrase = document.getElementById("avatarPhrase");
     const nick = document.getElementById("nicknameInput");
 
+    if (shouldAutoFocus()) {
+        nick.focus();
+    }
+
+
     if (info) info.textContent = "Avatar selecionado: -";
     if (phrase) phrase.textContent = "";
     if (nick) nick.value = "";
@@ -605,7 +619,6 @@ function showAvatarSelection() {
     });
 
     updateStartButtonState();
-    if (nick) nick.focus();
 }
 
 function selectAvatar(element, avatarName) {
@@ -773,7 +786,13 @@ function startGame() {
         `<img src="assets/avatar_${selectedAvatar.toLowerCase()}.png" width="30" style="vertical-align: middle; margin-right: 5px;"> ${nameLabel}`;
 
     document.getElementById("kanaInput").value = "";
-    document.getElementById("kanaInput").focus();
+    const kanaInput = document.getElementById("kanaInput");
+    kanaInput.value = "";
+
+    if (shouldAutoFocus()) {
+        kanaInput.focus();
+    }
+
 
     updateHUD();
 
