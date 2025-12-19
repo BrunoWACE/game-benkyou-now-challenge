@@ -1151,3 +1151,22 @@ window.onload = () => {
 
 
 };
+
+function checkOrientation() {
+    const warning = document.getElementById("rotate-warning");
+
+    if (window.innerWidth > window.innerHeight) {
+        // Landscape
+        warning.style.display = "flex";
+    } else {
+        // Portrait
+        warning.style.display = "none";
+    }
+}
+
+window.addEventListener("resize", checkOrientation);
+window.addEventListener("orientationchange", checkOrientation);
+
+// inicial
+checkOrientation();
+

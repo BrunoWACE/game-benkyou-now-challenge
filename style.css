@@ -748,6 +748,19 @@ body.in-game .hero-overlay {
     margin-top: -50px;
 }
 
+#rotate-warning {
+    position: fixed;
+    inset: 0;
+    background: #790002;
+    color: #fff;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 9999;
+    font-size: 1.2rem;
+}
+
 
 @media (max-width: 768px) {
 
