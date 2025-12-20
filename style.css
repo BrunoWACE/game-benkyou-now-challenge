@@ -779,7 +779,7 @@ body.in-game .hero-overlay {
 @media (max-width: 768px) {
 
     #hajimeText {
-        font-size: 66px;
+        font-size: 80px;
     }
 
     .music-btn {
@@ -959,7 +959,7 @@ body.in-game .hero-overlay {
     }
 
     #owari {
-        font-size: 110px;
+        font-size: 120px;
     }
 
 
